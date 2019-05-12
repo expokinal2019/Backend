@@ -1,36 +1,25 @@
 {
   "name": "backend",
-  "version": "1.0.0",
-  "main": "dist/index.js",
+  "version": "0.1",
+  "description": "Backen para el proyecto de ExpoKinal 2019",
+  "main": "src/index.js",
   "repository": "https://github.com/expokinal2019/Backend.git",
-  "author": "Chofito <rjroblesq@gmail.com>",
+  "author": "BackendTeam",
   "license": "MIT",
   "scripts": {
-    "start": "node --inspect=5858 -r ts-node/register src/index.ts",
-    "dev": "nodemon",
-    "build": "tsc"
-  },
-  "devDependencies": {
-    "nodemon": "^1.19.0",
-    "ts-node": "^8.1.0",
-    "tslint": "^5.16.0",
-    "typescript": "^3.4.5"
+    "start": "nodemon src/index.js"
   },
   "dependencies": {
-    "@types/express": "^4.16.1",
-    "express": "^4.16.4"
-  },
-  "nodemonConfig": {
-    "ignore": [
-      "**/*.test.ts",
-      "**/*.spec.ts",
-      ".git",
-      "node_modules"
-    ],
-    "watch": [
-      "src"
-    ],
-    "exec": "npm start",
-    "ext": "ts"
+    "bcryptjs": "^2.4.3",
+    "body-parser": "^1.19.0",
+    "compression": "^1.7.4",
+    "connect-multiparty": "^2.2.0",
+    "cors": "^2.8.5",
+    "express": "^4.16.4",
+    "helmet": "^3.18.0",
+    "jwt-simple": "^0.5.6",
+    "moment": "^2.24.0",
+    "mongoose": "^5.5.7",
+    "nodemon": "^1.19.0"
   }
 }
