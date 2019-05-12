@@ -25,7 +25,7 @@ function signUp(req, res) {
             if (err) return res.status(500).send({ message: 'Error in search request' });
 
             if (user && users.length > 0) {
-                return res.status(500).send({ message: 'The username or email is already resgister with other user' });
+                return res.status(500).send({ message: 'The username or email is already register with other user' });
             } else {
                 bcrypt.genSalt(10, function(err, salt) {
                     bcrypt.hash(params.password, salt, function(err, hash) {
