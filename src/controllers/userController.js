@@ -15,6 +15,7 @@ function signUp(req, res) {
         user.password = params.password;
         user.image = null;
 
+
         User.find({
             $or: [
                 { 'username': user.username.toLowerCase() },
@@ -26,19 +27,21 @@ function signUp(req, res) {
             if (user && users.length > 0) {
                 return res.status(500).send({ message: 'The username or email is already resgister with other user' });
             } else {
-                bcrypt.hash(params.password, (err, hash) => {
-                    user.password = hash;
+                bcrypt.genSalt(10, function(err, salt) {
+                    bcrypt.hash(params.password, salt, function(err, hash) {
+                        user.password = hash;
 
-                    user.save((err, storedUser) => {
-                        if (err) return res.status(500).send({ message: 'Error in save request' });
+                        user.save((err, storedUser) => {
+                            if (err) return res.status(500).send({ message: 'Error in save request' });
 
-                        if (!storedUser) {
-                            return res.status(500).send({ message: 'User could not be stored' });
-                        } else {
-                            return res.status(200).send({ user: storedUser });
-                        }
-                    })
-                })
+                            if (!storedUser) {
+                                return res.status(500).send({ message: 'User could not be stored' });
+                            } else {
+                                return res.status(200).send({ user: storedUser });
+                            }
+                        })
+                    });
+                })                
             }
         })
     } else {
@@ -61,19 +64,61 @@ function login(req, res) {
                 if (!check) {
                     return res.status(500).send({ message: 'Wrong password' });
                 } else {
-                    if (!params.getToken) {
-                        foundUser.password = undefined;
-                        return res.status(500).send({ foundUser });
-                    } else {
-                        return res.status(500).send({ token: jwt.createToken(foundUser) });
-                    }
+                    foundUser.password = undefined;
+                    return res.status(500).send({ foundUser, token: jwt.createToken(foundUser) });
                 }
             });
         }
     });
 }
 
+function editUser(req, res){
+    var userId = req.params.id;
+    var params = req.body;
+    
+    if(req.user.sub != userId){
+        return res.status(500).send({message: 'No se puede editar al usuario'})
+    }    
+    delete params.password;
+
+    User.findByIdAndUpdate(userId, params, {new:true}, (err, usuarioActualizado)=>{
+        if(err) return res.status(500).send({message: 'error en la peticion'})
+
+        if(!usuarioActualizado) return res.status(404).send({message: 'No se ha podido actualziar los datos del usuario'})
+        
+        return res.status(200).send({user: usuarioActualizado})
+    })
+}
+
+function deleteUser(req, res){
+    var userId = req.params.id;
+ 
+    if(req.user.sub != userId){
+        return res.status(500).send({message: 'No se puede eliminar al usuario'})
+    } 
+
+    User.findByIdAndRemove(userId, (err, usuarioEliminado) => {
+
+        if(err) return res.status(500).send({ message: 'Error en el servidor' });
+         
+            if(usuarioEliminado){
+                return res.status(200).send({
+                    user: usuarioEliminado
+                });
+            }else{
+                return res.status(404).send({
+                    message: 'No existe el usuario'
+                });
+            }
+         
+    });
+
+}
+
+
 module.exports = {
     signUp,
-    login
+    login,
+    editUser,
+    deleteUser
 }
