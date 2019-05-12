@@ -1,6 +1,9 @@
 'use strict'
 
 const express = require('express');
+const compression = require('compression');
+const cors = require('cors');
+const helmet = require('helmet');
 const bodyParser = require('body-parser');
 const app = express();
 
@@ -12,6 +15,9 @@ var teamRoutes = require('./routes/teamRoutes');
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
+app.use(cors());
+app.use(compression());
+app.use(helmet());
 
 app.use((req, res, next) => {
     res.header('Access-Controll-Allow-Origin', '*');
