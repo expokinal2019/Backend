@@ -1,6 +1,6 @@
 {
   "name": "backend",
-  "version": "0.1",
+  "version": "1.0.0",
   "description": "Backen para el proyecto de ExpoKinal 2019",
   "main": "src/index.js",
   "repository": "https://github.com/expokinal2019/Backend.git",
