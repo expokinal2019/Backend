@@ -12,9 +12,9 @@ var api = express.Router();
 
 api.post('/sign-up', userController.signUp);
 api.post('/login', userController.login);
-api.put('/user/:id', md_auth.ensureAuth, userController.editUser);
-api.delete('/user/:id', md_auth.ensureAuth, userController.deleteUser);
-api.post('/user/:id/subir-imagen', [md_auth.ensureAuth, md_subir], UserController.uploadImage);
-api.get('/user/:nameImage', UserController.getImage);
+api.put('/:id', md_auth.ensureAuth, userController.editUser);
+api.delete('/:id', md_auth.ensureAuth, userController.deleteUser);
+api.post('/:id/subir-imagen', [md_auth.ensureAuth, md_subir], UserController.uploadImage);
+api.get('/:nameImage', UserController.getImage);
 
 module.exports = api;

@@ -67,30 +67,35 @@ function addIntegrant(req, res) {
     var teamId = req.params.teamId;
     var ManagerId = req.user.sub;
     var integranId = req.params.integrantId;
+    var estado = true;
 
     Team.findById(teamId).exec((err, foundTeam) => {
         if (err) return res.status(500).send({ message: 'Error at searching teams' });
-        console.log(err)
-        console.log(foundTeam)
         if (!foundTeam) {
             return res.status(500).send({ message: 'Team not found' });
         } else {
             if (foundTeam.teamManager == ManagerId) {
-                console.log(ManagerId, foundTeam.teamManager)
-                Team.findByIdAndUpdate(teamId, {
-                    $addToSet: {
-                        integrants: { 'user': integranId, 'role': 'USER' }
+                foundteam.integrants.forEach(element => {
+                    if (element._id === integrantId) {
+                        estado = false;
+                        return res.status(500).send({ message: 'El usuario ya es integrante de este equipo.'})
                     }
-                }, { new: true }, (err, updatedTeam) => {
-                    console.log(err, updatedTeam)
-                    if (err) return res.status(500).send({ message: 'Error at adding integrant' });
-
-                    if (!updatedTeam) {
-                        return res.status(500).send({ message: 'Integrant could not be added' });
-                    } else {
-                        return res.status(200).send({ team: updatedTeam });
-                    }
-                })
+                });
+                if (estado) {
+                    Team.findByIdAndUpdate(teamId, {
+                        $addToSet: {
+                            integrants: { 'user': integranId, 'role': 'USER' }
+                        }
+                    }, { new: true }, (err, updatedTeam) => {
+                        if (err) return res.status(500).send({ message: 'Error at adding integrant' });
+    
+                        if (!updatedTeam) {
+                            return res.status(500).send({ message: 'Integrant could not be added' });
+                        } else {
+                            return res.status(200).send({ team: updatedTeam });
+                        }
+                    });
+                }
             }
         }
     })
@@ -109,7 +114,7 @@ function removeIntegrant(req, res) {
         } else {
             if (foundTeam.teamManager == ManagerId) {
                 Team.findByIdAndUpdate(teamId, {
-                    $pull: { integrants: { 'user': integranId } }
+                    $pull: { integrants: { '_id': integranId } }
                 }, { new: true }, (err, updatedTeam) => {
                     if (err) return res.status(500).send({ message: 'Error at removing integrant' });
 
