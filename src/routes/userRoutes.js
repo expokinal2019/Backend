@@ -1,7 +1,7 @@
 'use strict'
 
 var express = require('express');
-var UserController = require('../controllers/userController');
+var userController = require('../controllers/userController');
 var md_auth = require('../middlewares/authentication');
 
 //SUBIR IMAGEN
