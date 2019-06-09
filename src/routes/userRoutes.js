@@ -15,7 +15,7 @@ api.post('/login', userController.login);
 api.put('/:id', md_auth.ensureAuth, userController.editUser);
 api.delete('/:id', md_auth.ensureAuth, userController.deleteUser);
 api.post('/:id/subir-imagen', [md_auth.ensureAuth, md_subir], userController.uploadImage);
-api.get('/:nameImage', userController.getImage);
-api.get('/test/test', (req, res) => res.status(200).send({message: 'test'}));
+api.get('/imagen/:nameImage', userController.getImage);
+api.get('/test', (req, res) => res.status(200).send({message: 'test'}));
 
 module.exports = api;
