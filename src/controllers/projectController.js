@@ -43,6 +43,8 @@ function editProject(req, res) {
     })
 }
 
+// @TODO Necesito obtener los proyectos, de los cuales no soy el dueño,
+//     pero pertenezco al equipo de trabajo.
 function getProjects(req, res) {
     var projectOwner = req.params.id;
 

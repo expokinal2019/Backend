@@ -8,7 +8,7 @@ var api = express.Router();
 
 api.post('/sign-up', userController.signUp);
 api.post('/login', userController.login);
-api.put('/edit-user/:id', md_auth.ensureAuth, userController.editUser);
-api.delete('/delete-user/:id', md_auth.ensureAuth, userController.deleteUser);
+api.put('/user/:id', md_auth.ensureAuth, userController.editUser);
+api.delete('/user/:id', md_auth.ensureAuth, userController.deleteUser);
 
 module.exports = api;

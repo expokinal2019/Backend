@@ -28,6 +28,10 @@ app.use((req, res, next) => {
     next();
 });
 
-app.use('/api', userRoutes, teamRoutes, projectRoutes, labelRoutes, taskRoutes);
+app.use('/api/v1/users', userRoutes);
+app.use('/api/v1/teams', teamRoutes);
+app.use('/api/v1/projects', projectRoutes);
+app.use('/api/v1/labels', labelRoutes);
+app.use('/api/v1/tasks', taskRoutes);
 
 module.exports = app;
