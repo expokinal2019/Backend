@@ -28,10 +28,10 @@ app.use((req, res, next) => {
     next();
 });
 
-app.use('/v1/users', userRoutes);
-app.use('/v1/teams', teamRoutes);
-app.use('/v1/projects', projectRoutes);
-app.use('/v1/labels', labelRoutes);
-app.use('/v1/tasks', taskRoutes);
+app.use('/api/v1/users', userRoutes);
+app.use('/api/v1/teams', teamRoutes);
+app.use('/api/v1/projects', projectRoutes);
+app.use('/api/v1/labels', labelRoutes);
+app.use('/api/v1/tasks', taskRoutes);
 
 module.exports = app;
