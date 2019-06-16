@@ -3,7 +3,6 @@
 var Task = require('../models/task');
 
 function addTask(req, res) {
-    console.log(0);
     var params = req.body;
     var task = new Task();
 
@@ -13,11 +12,9 @@ function addTask(req, res) {
         task.deadline = params.deadline;
         task.taskOwner = params.taskOwner;
         task.status = 'TO DO';
-        console.log(1);
 
         task.save((err, storedTask) => {
-            console.log(2);
-            if (err) return res.status(500).send({ message: 'Error at saving task' });
+            if (err) return res.status(500).send({ message: 'Error at saving task', err: error });
 
             if (!storedTask) {
                 return res.status(500).send({ message: 'Task could not be saved' });
