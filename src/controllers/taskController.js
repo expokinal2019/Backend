@@ -3,17 +3,20 @@
 var Task = require('../models/task');
 
 function addTask(req, res) {
+    console.log(0);
     var params = req.body;
     var task = new Task();
 
-    if (params.name && params.description && params.deadline && params.taskOwner) {
+    if (params.name && params.description && params.deadline /* && params.taskOwner */) {
         task.name = params.name;
         task.description = params.description;
         task.deadline = params.deadline;
         task.taskOwner = params.taskOwner;
         task.status = 'TO DO';
+        console.log(1);
 
         task.save((err, storedTask) => {
+            console.log(2);
             if (err) return res.status(500).send({ message: 'Error at saving task' });
 
             if (!storedTask) {
@@ -22,6 +25,8 @@ function addTask(req, res) {
                 return res.status(200).send({ task: storedTask });
             }
         })
+    } else {
+        res.status(402).send({ message: 'Grande! No mandaste los campos requeridos.' });
     }
 }
 
