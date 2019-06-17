@@ -41,6 +41,14 @@ function getTask(req, res){
     })
 }
 
+function getTasks(req, res) {
+    Task.find({}).exec((err, userTasks) => {
+        if (err) return res.status(500).send({ message: 'Request error!' });
+
+        return res.status(200).send({ tasks: userTasks });
+    })
+}
+
 function editTask(req, res){
     let idTask = req.params.id;
     let params = req.body;
@@ -73,6 +81,7 @@ function deleteTask(req, res){
 module.exports = {
     addTask,
     getTask,
+    getTasks,
     editTask,
     deleteTask
 }
