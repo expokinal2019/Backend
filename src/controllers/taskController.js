@@ -4,7 +4,7 @@ var Task = require('../models/task');
 var Project = require('../models/project');
 
 function addTask(req, res) {
-    var idUser=req.params.idUser
+    var idUser=req.user.sub
     var idProject=req.params.idProject
     var params = req.body;
     var task = new Task();
@@ -16,19 +16,21 @@ function addTask(req, res) {
         task.taskOwner = idUser;
         task.project=idProject
         task.status = 'TO DO';
-        console.log('hola')
         Project.findById(idProject,(err,projectF)=>{
-            console.log('hola 1')
             if (projectF) {
-                console.log('hola 2')
-                task.save((err, storedTask) => {
-                    if (err) return res.status(500).send({ message: 'Error at saving task' });  
-                    if (!storedTask) {
-                        return res.status(500).send({ message: 'Task could not be saved' });
-                    } else {
-                        return res.status(200).send({ task: storedTask });
-                    }
-                })
+                if (projectF.projectOwner==idUser) {
+                    task.save((err, storedTask) => {
+                        if (err) return res.status(500).send({ message: 'Error at saving task' });  
+                        if (!storedTask) {
+                            return res.status(500).send({ message: 'Task could not be saved' });
+                        } else {
+                            return res.status(200).send({ task: storedTask });
+                        }
+                    })
+                } else {
+                    return res.status(500).send({message:'You are not the project Owner'})
+                }
+
             } else {
                  return res.status(500).send({message:'Project doesnt exists'})
             }
