@@ -10,7 +10,8 @@ var taskSchema = Schema({
     labels: [{ type: Schema.Types.ObjectId, ref: 'label' }],
     taskOwner: [{ type: Schema.Types.ObjectId, ref: 'user' }],
     status: String,
-    progress: Number
+    progress: Number,
+    project:{type: Schema.Types.ObjectId, ref: 'project'}
 });
 
 module.exports = mongoose.model('Task', taskSchema);
