@@ -5,7 +5,7 @@ var Task = require('../models/task');
 
 function addProject(req, res) {
     var params = req.body;
-    var projectOwner = req.params.userId;
+    var projectOwner = req.user.sub;
     var project = new Project();
 
     if (params.name && params.description && params.developerTeam) {
