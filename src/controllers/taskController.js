@@ -37,9 +37,22 @@ function addTask(req, res) {
 }
 
 function getTask(req, res){
-    let idUser = req.params.id;
+    let taskId = req.params.id;
 
-    Task.find({taskOwner : idUser}).exec((err, userTasks) => {
+    Task.find({_id : taskId}).exec((err, userTasks) => {
+        if (err) return res.status(500).send({ message: 'Request error!' });
+        if (!userTasks) {
+            return res.status(500).send({ message: 'No found tasks' });
+        } else {
+            return res.status(200).send({ tasks: userTasks });
+        }
+    })
+}
+
+function getTasksByOwner(req, res){
+    let ownerId = req.params.id;
+
+    Task.find({taskOwner : ownerId}).exec((err, userTasks) => {
         if (err) return res.status(500).send({ message: 'Request error!' });
         if (!userTasks) {
             return res.status(500).send({ message: 'No found tasks' });
@@ -95,5 +108,6 @@ module.exports = {
     getTask,
     getAllTasks,
     editTask,
-    deleteTask
+    deleteTask,
+    getTasksByOwner
 }
