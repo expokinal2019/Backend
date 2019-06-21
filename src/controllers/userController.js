@@ -27,11 +27,9 @@ function signUp(req, res) {
         return res.status(500).send({ message: "Error in search request" });
 
       if (user && users.length > 0) {
-        return res
-          .status(500)
-          .send({
-            message: "The username or email is already register with other user"
-          });
+        return res.status(500).send({
+          message: "The username or email is already register with other user"
+        });
       } else {
         bcrypt.genSalt(10, function(err, salt) {
           bcrypt.hash(params.password, salt, function(err, hash) {
@@ -105,11 +103,9 @@ function editUser(req, res) {
       if (err) return res.status(500).send({ message: "error en la peticion" });
 
       if (!usuarioActualizado)
-        return res
-          .status(404)
-          .send({
-            message: "No se ha podido actualziar los datos del usuario"
-          });
+        return res.status(404).send({
+          message: "No se ha podido actualziar los datos del usuario"
+        });
       usuarioActualizado.password = undefined;
       return res.status(200).send({ user: usuarioActualizado });
     }
@@ -173,11 +169,9 @@ function uploadImage(req, res) {
               .send({ message: " no se a podido actualizar el usuario" });
 
           if (!usuarioActualizado)
-            return res
-              .status(404)
-              .send({
-                message: "error en los datos del usuario, no se pudo actualizar"
-              });
+            return res.status(404).send({
+              message: "error en los datos del usuario, no se pudo actualizar"
+            });
 
           return res.status(200).send({ user: usuarioActualizado });
         }
