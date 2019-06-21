@@ -35,7 +35,11 @@ function addTask(req, res) {
                  return res.status(500).send({message:'Project doesnt exists'})
             }
         })
+    } else {
+        return res.status(400).send({ message: 'Bad request' });
     }
+    
+    
 }
 
 function getTask(req, res){
