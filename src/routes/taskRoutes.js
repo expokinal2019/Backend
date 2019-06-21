@@ -12,5 +12,9 @@ api.get('/owner/:ownerId', md_auth.ensureAuth, taskController.getTasksByOwner);
 api.get('/:idProject/getAllTasks',md_auth.ensureAuth,taskController.getAllTasks)
 api.put('/:id', md_auth.ensureAuth, taskController.editTask);
 api.delete('/:id', md_auth.ensureAuth, taskController.deleteTask);
-
+api.get('getTasksByDate/:date', md_auth.ensureAuth, taskController.getTasksByDate);
+api.get('getTasksByStatus/:status', md_auth.ensureAuth, taskController.getTasksByStatus);
+api.get('getTasksByLabels/:labels', md_auth.ensureAuth, taskController.getTasksByLabels);
+api.get('getPendingTasks/:projectId', md_auth.ensureAuth, taskController.getPendingTasks);
+    
 module.exports = api;

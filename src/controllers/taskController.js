@@ -2,6 +2,9 @@
 
 var Task = require('../models/task');
 var Project = require('../models/project');
+var Team = require('../models/team');
+const includes = require('includes');
+
 
 function addTask(req, res) {
     var idUser=req.user.sub
@@ -76,6 +79,117 @@ function getAllTasks(req,res) {
         }
     })
 }
+
+function getTasksByDate(req, res){
+    let idUser=req.user.sub;
+    let date = req.params.date;
+    let projectId = req.body.project;
+
+    
+    Project.findById(projectId, (err, dataProyect)=>{
+        if (err) return res.status(500).send({message : 'Request error!'});
+
+        Team.findById(dataProyect.developerTeam, (err, dataTeam)=>{
+            if((`${dataTeam.integrants}`).includes(`${idUser}`)){
+                Task.find({project : projectId,deadline : date}).exec((err, tasksByDate) => {
+                    if (err) return res.status(500).send({message : 'Request error!'});
+                    if (!tasksByDate) {
+                        return res.status(500).send({ message: 'No found tasks' });
+                    } else {
+                        return res.status(200).send({ tasks: tasksByDate });
+                    }
+                })
+            }else{
+                console.log('The user is not part of the project.')
+            }
+        })       
+    })    
+}
+
+function getTasksByStatus(req, res){
+    let idUser=req.user.sub;
+    let status = req.params.status;
+    let projectId = req.body.project;
+
+    
+    Project.findById(projectId, (err, dataProyect)=>{
+        if (err) return res.status(500).send({message : 'Request error!'});
+
+        Team.findById(dataProyect.developerTeam, (err, dataTeam)=>{
+            if((`${dataTeam.integrants}`).includes(`${idUser}`)){
+                Task.find({project : projectId,status : status}).exec((err, tasksByStatus) => {
+                    if (err) return res.status(500).send({message : 'Request error!'});
+                    if (!tasksByStatus) {
+                        return res.status(500).send({ message: 'No found tasks' });
+                    } else {
+                        return res.status(200).send({ tasks: tasksByStatus });
+                    }
+                })
+            }else{
+                console.log('The user is not part of the project.')
+            }
+        })       
+    })
+}
+
+function getTasksByLabels(req, res){  
+    let idUser=req.user.sub;
+    let labels = req.params.labels;
+    let projectId = req.body.project;
+
+    
+    Project.findById(projectId, (err, dataProyect)=>{
+        if (err) return res.status(500).send({message : 'Request error!'});
+
+        Team.findById(dataProyect.developerTeam, (err, dataTeam)=>{
+            if((`${dataTeam.integrants}`).includes(`${idUser}`)){
+                Task.find({project : projectId,labels : labels}).exec((err, tasksByLabel) => {
+                    if (err) return res.status(500).send({message : 'Request error!'});
+                    if (!tasksByLabel) {
+                        return res.status(500).send({ message: 'No found tasks' });
+                    } else {
+                        return res.status(200).send({ tasks: tasksByLabel });
+                    }
+                })
+            }else{
+                console.log('The user is not part of the project.')
+            }
+        })       
+    })
+}
+
+function getPendingTasks(req, res){
+    let idUser=req.user.sub;
+    let projectId = req.params.projectId;
+
+    var pendingTasks = [];
+    
+    Project.findById(projectId, (err, dataProyect)=>{
+        if (err) return res.status(500).send({message : 'Request error!'});
+
+        Team.findById(dataProyect.developerTeam, (err, dataTeam)=>{
+            if((`${dataTeam.integrants}`).includes(`${idUser}`)){
+                Task.find({project : projectId}).exec((err, pendingTask) => {
+                    if (err) return res.status(500).send({message : 'Request error!'});
+                    if (!pendingTask) {
+                        return res.status(500).send({ message: 'No found tasks' });
+                    } else {
+                        for(let i = 0; i < pendingTask.length; i++){
+                            if(pendingTask[i].progress < 100){
+                                pendingTasks.push(pendingTask[i])
+                            }
+                        }
+                        return res.status(200).send({ tasks: pendingTasks });
+                    }
+                })
+            }else{
+                console.log('The user is not part of the project.')
+            }
+        })       
+    })
+}
+
+
 function editTask(req, res){
     let idTask = req.params.id;
     let params = req.body;
@@ -111,5 +225,9 @@ module.exports = {
     getAllTasks,
     editTask,
     deleteTask,
-    getTasksByOwner
+    getTasksByOwner,
+    getTasksByDate,
+    getTasksByStatus,
+    getTasksByLabels,
+    getPendingTasks
 }
