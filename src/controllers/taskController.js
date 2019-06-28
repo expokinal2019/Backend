@@ -51,7 +51,7 @@ function getTask(req, res) {
   Task.find({ _id: taskId }).exec((err, userTasks) => {
     if (err) return res.status(500).send({ message: "Request error!" });
     if (!userTasks) {
-      return res.status(500).send({ message: "No found tasks" });
+      return res.status(404).send({ message: "No found tasks" });
     } else {
       return res.status(200).send({ tasks: userTasks });
     }
@@ -64,7 +64,7 @@ function getTasksByOwner(req, res) {
   Task.find({ taskOwner: ownerId }).exec((err, userTasks) => {
     if (err) return res.status(500).send({ message: "Request error!" });
     if (!userTasks) {
-      return res.status(500).send({ message: "No found tasks" });
+      return res.status(404).send({ message: "No found tasks" });
     } else {
       return res.status(200).send({ tasks: userTasks });
     }
@@ -78,7 +78,7 @@ function getAllTasks(req, res) {
     (err, tasksByProject) => {
       if (err) return res.status(500).send({ message: "Request error!" });
       if (!tasksByProject) {
-        return res.status(500).send({ message: "No found tasks" });
+        return res.status(404).send({ message: "No found tasks" });
       } else {
         return res.status(200).send({ tasks: tasksByProject });
       }
@@ -100,7 +100,7 @@ function getTasksByDate(req, res) {
           (err, tasksByDate) => {
             if (err) return res.status(500).send({ message: "Request error!" });
             if (!tasksByDate) {
-              return res.status(500).send({ message: "No found tasks" });
+              return res.status(404).send({ message: "No found tasks" });
             } else {
               return res.status(200).send({ tasks: tasksByDate });
             }
@@ -127,7 +127,7 @@ function getTasksByStatus(req, res) {
           (err, tasksByStatus) => {
             if (err) return res.status(500).send({ message: "Request error!" });
             if (!tasksByStatus) {
-              return res.status(500).send({ message: "No found tasks" });
+              return res.status(404).send({ message: "No found tasks" });
             } else {
               return res.status(200).send({ tasks: tasksByStatus });
             }
@@ -154,7 +154,7 @@ function getTasksByLabels(req, res) {
           (err, tasksByLabel) => {
             if (err) return res.status(500).send({ message: "Request error!" });
             if (!tasksByLabel) {
-              return res.status(500).send({ message: "No found tasks" });
+              return res.status(404).send({ message: "No found tasks" });
             } else {
               return res.status(200).send({ tasks: tasksByLabel });
             }
@@ -181,7 +181,7 @@ function getPendingTasks(req, res) {
         Task.find({ project: projectId }).exec((err, pendingTask) => {
           if (err) return res.status(500).send({ message: "Request error!" });
           if (!pendingTask) {
-            return res.status(500).send({ message: "No found tasks" });
+            return res.status(404).send({ message: "No found tasks" });
           } else {
             for (let i = 0; i < pendingTask.length; i++) {
               if (pendingTask[i].progress < 100) {
@@ -207,7 +207,7 @@ function editTask(req, res) {
       return res.status(500).send({ message: "Failed to edit the task" });
 
     if (!editedTask) {
-      return res.status(500).send({ message: "Task could not be edited" });
+      return res.status(404).send({ message: "Task could not be edited" });
     } else {
       return res.status(200).send({ task: editedTask });
     }

@@ -70,15 +70,15 @@ function login(req, res) {
     if (err) return res.status(500).send({ message: "Error in request" });
 
     if (!foundUser) {
-      return res.status(500).send({ message: "User not found" });
+      return res.status(404).send({ message: "User not found" });
     } else {
       bcrypt.compare(password, foundUser.password, (err, check) => {
         if (!check) {
-          return res.status(500).send({ message: "Wrong password" });
+          return res.status(404).send({ message: "Wrong password" });
         } else {
           foundUser.password = undefined;
           return res
-            .status(500)
+            .status(200)
             .send({ foundUser, token: jwt.createToken(foundUser) });
         }
       });
@@ -91,7 +91,7 @@ function editUser(req, res) {
   var params = req.body;
 
   if (req.user.sub != userId) {
-    return res.status(500).send({ message: "No se puede editar al usuario" });
+    return res.status(404).send({ message: "The user can not be edited" });
   }
   delete params.password;
 
@@ -100,11 +100,11 @@ function editUser(req, res) {
     params,
     { new: true },
     (err, usuarioActualizado) => {
-      if (err) return res.status(500).send({ message: "error en la peticion" });
+      if (err) return res.status(500).send({ message: "Error in the request" });
 
       if (!usuarioActualizado)
         return res.status(404).send({
-          message: "No se ha podido actualziar los datos del usuario"
+          message: "The user can not be edited"
         });
       usuarioActualizado.password = undefined;
       return res.status(200).send({ user: usuarioActualizado });
@@ -116,11 +116,11 @@ function deleteUser(req, res) {
   var userId = req.params.id;
 
   if (req.user.sub != userId) {
-    return res.status(500).send({ message: "No se puede eliminar al usuario" });
+    return res.status(404).send({ message: "The user can not be deleted" });
   }
 
   User.findByIdAndRemove(userId, (err, usuarioEliminado) => {
-    if (err) return res.status(500).send({ message: "Error en el servidor" });
+    if (err) return res.status(500).send({ message: "Error in the request" });
 
     if (usuarioEliminado) {
       return res.status(200).send({
@@ -128,7 +128,7 @@ function deleteUser(req, res) {
       });
     } else {
       return res.status(404).send({
-        message: "No existe el usuario"
+        message: "The user is not exists"
       });
     }
   });
@@ -166,18 +166,18 @@ function uploadImage(req, res) {
           if (err)
             return res
               .status(500)
-              .send({ message: " no se a podido actualizar el usuario" });
+              .send({ message: "the user could not be updated" });
 
           if (!usuarioActualizado)
             return res.status(404).send({
-              message: "error en los datos del usuario, no se pudo actualizar"
+              message: "error in user data, could not update"
             });
 
           return res.status(200).send({ user: usuarioActualizado });
         }
       );
     } else {
-      return removeFilesOfUploads(res, file_path, "extension no valida");
+      return removeFilesOfUploads(res, file_path, "extension not valid");
     }
   }
 }
@@ -196,7 +196,7 @@ function getImage(req, res) {
     if (exists) {
       res.sendFile(path.resolve(path_file));
     } else {
-      res.status(200).send({ message: "no existe la imagen" });
+      res.status(200).send({ message: "The image not exists" });
     }
   });
 }
