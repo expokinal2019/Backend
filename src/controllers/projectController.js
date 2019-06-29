@@ -16,17 +16,17 @@ function addProject(req, res) {
     project.files = null;
     project.save((err, storedProject) => {
       if (err)
-        return res.status(500).send({ message: "Error at saving project" });
+        return res.status(500).send({ message: "Error al guardar proyecto" });
 
       if (!storedProject) {
-        return res.status(500).send({ message: "Project could no be saved" });
+        return res.status(500).send({ message: "Proyecto no pudo ser guardado" });
       } else {
         return res.status(200).send({ project: storedProject });
       }
     });
   } else {
     return res.status(500).send({
-      message: "Fill all the required fields before creating the project"
+      message: "Rellene todos los campos requeridos antes de crear el proyecto."
     });
   }
 }
@@ -41,12 +41,12 @@ function editProject(req, res) {
     { new: true },
     (err, updatedProject) => {
       if (err)
-        return res.status(500).send({ message: "Error in update request" });
+        return res.status(500).send({ message: "Error en la solicitud de actualización" });
 
       if (!updatedProject) {
         return res
           .status(500)
-          .send({ message: "Project could not be updated" });
+          .send({ message: "Proyecto no pudo ser actualizado" });
       } else {
         return res.status(200).send({ project: updatedProject });
       }
@@ -60,10 +60,10 @@ function getProjects(req, res) {
   var projectOwner = req.params.id;
 
   Project.find({ projectOwner: projectOwner }).exec((err, projects) => {
-    if (err) return res.status(500).send({ message: "error in find request" });
+    if (err) return res.status(500).send({ message: "error en la solicitud de búsqueda" });
 
     if (!projects) {
-      return res.status(500).send({ message: "There are no projects to list" });
+      return res.status(500).send({ message: "No hay proyectos para listar." });
     } else {
       return res.status(200).send({ projects: projects });
     }
@@ -77,27 +77,27 @@ function deleteProject(req, res) {
     Task.find({ project: projectId }, (err, tasksByProject) => {
       tasksByProject.forEach(element => {
         Task.findByIdAndDelete(element.id, (err, taskDeleted) => {
-          if (err) return res.status(404).send({ message: "Request Error" });
+          if (err) return res.status(404).send({ message: "Error en la peticion!" });
           if (!taskDeleted)
             return res
               .status(500)
-              .send({ message: "There are no tasks to list" });
+              .send({ message: "No hay tareas para enumerar." });
         });
       });
     });
     if (err)
-      return res.status(500).send({ message: "Error in delete request" });
+      return res.status(500).send({ message: "Error en la solicitud de eliminación" });
     if (!deletedProject) {
-      return res.status(500).send({ message: "Project could not be deleted" });
+      return res.status(500).send({ message: "Proyecto no pudo ser eliminado" });
     } else {
       if (deletedProject.projectOwner == req.user.sub) {
         return res
           .status(200)
-          .send({ message: "Project deleted successfully" });
+          .send({ message: "Proyecto eliminado exitosamente" });
       } else {
         return res
           .status(500)
-          .send({ message: "Dont have permission to delete the project" });
+          .send({ message: "No tienes permiso para borrar el proyecto." });
       }
     }
   });

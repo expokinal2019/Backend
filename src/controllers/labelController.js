@@ -9,9 +9,9 @@ function createLabel(req, res) {
     label.name = params.name;
     label.color = params.color;
     label.save((err, labelCreated) => {
-      if (err) return res.status(500).send({ message: "Request Error" });
+      if (err) return res.status(500).send({ message: "Error en peticion!" });
       if (!labelCreated)
-        return res.status(404).send({ message: "Could not create a label" });
+        return res.status(404).send({ message: "No se pudo crear una etiqueta" });
       return res.status(200).send({ label: labelCreated });
     });
   }
@@ -25,9 +25,9 @@ function editLabel(req, res) {
     params,
     { new: true },
     (err, labelUpdated) => {
-      if (err) return res.status(500).send({ message: "Request Error" });
+      if (err) return res.status(500).send({ message: "Error en peticion!" });
       if (!labelUpdated)
-        return res.status(404).send({ message: "Could not update the label" });
+        return res.status(404).send({ message: "No se pudo actualizar la etiqueta" });
       return res.status(200).send({ label: labelUpdated });
     }
   );
@@ -36,20 +36,20 @@ function editLabel(req, res) {
 function deleteLabel(req, res) {
   var labelId = req.params.id;
   Label.findByIdAndRemove(labelId, (err, labelDeleted) => {
-    if (err) return res.status(500).send({ message: "Request Error" });
+    if (err) return res.status(500).send({ message: "Error en peticion!" });
     if (!labelDeleted)
-      return res.status(404).send({ message: "Could not delete the label" });
+      return res.status(404).send({ message: "No se pudo eliminar la etiqueta." });
     if (labelDeleted) {
-      return res.status(200).send({ message: "Label deleted successfully" });
+      return res.status(200).send({ message: "Etiqueta eliminada exitosamente" });
     }
   });
 }
 
 function getLabels(req, res) {
   Label.find((err, labels) => {
-    if (err) return res.status(500).send({ message: "Request Error" });
+    if (err) return res.status(500).send({ message: "Error en peticion!" });
     if (!labels)
-      return res.status(404).send({ message: "Could not read the labels" });
+      return res.status(404).send({ message: "No se pudieron leer las etiquetas." });
     return res.status(200).send({ labels: labels });
   });
 }

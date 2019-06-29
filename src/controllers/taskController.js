@@ -22,11 +22,11 @@ function addTask(req, res) {
         if (projectF.projectOwner == idUser) {
           task.save((err, storedTask) => {
             if (err)
-              return res.status(500).send({ message: "Error at saving task" });
+              return res.status(500).send({ message: "Error al guardar la tarea" });
             if (!storedTask) {
               return res
                 .status(500)
-                .send({ message: "Task could not be saved" });
+                .send({ message: "La tarea no se pudo guardar" });
             } else {
               return res.status(200).send({ task: storedTask });
             }
@@ -34,14 +34,14 @@ function addTask(req, res) {
         } else {
           return res
             .status(500)
-            .send({ message: "You are not the project Owner" });
+            .send({ message: "Usted no es el propietario del proyecto" });
         }
       } else {
-        return res.status(500).send({ message: "Project doesnt exists" });
+        return res.status(500).send({ message: "El Proyecto no existe" });
       }
     });
   } else {
-    return res.status(400).send({ message: "Bad request" });
+    return res.status(400).send({ message: "Solicitud incorrecta" });
   }
 }
 
@@ -49,9 +49,9 @@ function getTask(req, res) {
   let taskId = req.params.id;
 
   Task.find({ _id: taskId }).exec((err, userTasks) => {
-    if (err) return res.status(500).send({ message: "Request error!" });
+    if (err) return res.status(500).send({ message: "Solicitud incorrecta!" });
     if (!userTasks) {
-      return res.status(404).send({ message: "No found tasks" });
+      return res.status(404).send({ message: "No se encontraron tareas" });
     } else {
       return res.status(200).send({ tasks: userTasks });
     }
@@ -62,9 +62,9 @@ function getTasksByOwner(req, res) {
   let ownerId = req.params.id;
 
   Task.find({ taskOwner: ownerId }).exec((err, userTasks) => {
-    if (err) return res.status(500).send({ message: "Request error!" });
+    if (err) return res.status(500).send({ message: "Error en peticion!" });
     if (!userTasks) {
-      return res.status(404).send({ message: "No found tasks" });
+      return res.status(404).send({ message: "No se encontraron tareas" });
     } else {
       return res.status(200).send({ tasks: userTasks });
     }
@@ -76,9 +76,9 @@ function getAllTasks(req, res) {
   var idProject = req.params.idProject;
   Task.find({ project: idProject, taskOwner: idUser }).exec(
     (err, tasksByProject) => {
-      if (err) return res.status(500).send({ message: "Request error!" });
+      if (err) return res.status(500).send({ message: "Error en peticion!" });
       if (!tasksByProject) {
-        return res.status(404).send({ message: "No found tasks" });
+        return res.status(404).send({ message: "No se encontraron tareas" });
       } else {
         return res.status(200).send({ tasks: tasksByProject });
       }
@@ -92,22 +92,22 @@ function getTasksByDate(req, res) {
   let projectId = req.body.project;
 
   Project.findById(projectId, (err, dataProyect) => {
-    if (err) return res.status(500).send({ message: "Request error!" });
+    if (err) return res.status(500).send({ message: "Error en peticion!" });
 
     Team.findById(dataProyect.developerTeam, (err, dataTeam) => {
       if (`${dataTeam.integrants}`.includes(`${idUser}`)) {
         Task.find({ project: projectId, deadline: date }).exec(
           (err, tasksByDate) => {
-            if (err) return res.status(500).send({ message: "Request error!" });
+            if (err) return res.status(500).send({ message: "Error en peticion!" });
             if (!tasksByDate) {
-              return res.status(404).send({ message: "No found tasks" });
+              return res.status(404).send({ message: "No se encontraron tareas" });
             } else {
               return res.status(200).send({ tasks: tasksByDate });
             }
           }
         );
       } else {
-        console.log("The user is not part of the project.");
+        console.log("El usuario no forma parte del proyecto.");
       }
     });
   });
@@ -119,22 +119,22 @@ function getTasksByStatus(req, res) {
   let projectId = req.body.project;
 
   Project.findById(projectId, (err, dataProyect) => {
-    if (err) return res.status(500).send({ message: "Request error!" });
+    if (err) return res.status(500).send({ message: "Error en peticion!" });
 
     Team.findById(dataProyect.developerTeam, (err, dataTeam) => {
       if (`${dataTeam.integrants}`.includes(`${idUser}`)) {
         Task.find({ project: projectId, status: status }).exec(
           (err, tasksByStatus) => {
-            if (err) return res.status(500).send({ message: "Request error!" });
+            if (err) return res.status(500).send({ message: "Error en peticion!" });
             if (!tasksByStatus) {
-              return res.status(404).send({ message: "No found tasks" });
+              return res.status(404).send({ message: "No se encontraron tareas" });
             } else {
               return res.status(200).send({ tasks: tasksByStatus });
             }
           }
         );
       } else {
-        console.log("The user is not part of the project.");
+        console.log("El usuario no forma parte del proyecto.");
       }
     });
   });
@@ -146,22 +146,22 @@ function getTasksByLabels(req, res) {
   let projectId = req.body.project;
 
   Project.findById(projectId, (err, dataProyect) => {
-    if (err) return res.status(500).send({ message: "Request error!" });
+    if (err) return res.status(500).send({ message: "Error en peticion!" });
 
     Team.findById(dataProyect.developerTeam, (err, dataTeam) => {
       if (`${dataTeam.integrants}`.includes(`${idUser}`)) {
         Task.find({ project: projectId, labels: labels }).exec(
           (err, tasksByLabel) => {
-            if (err) return res.status(500).send({ message: "Request error!" });
+            if (err) return res.status(500).send({ message: "Error en peticion!" });
             if (!tasksByLabel) {
-              return res.status(404).send({ message: "No found tasks" });
+              return res.status(404).send({ message: "No se encontraron tareas" });
             } else {
               return res.status(200).send({ tasks: tasksByLabel });
             }
           }
         );
       } else {
-        console.log("The user is not part of the project.");
+        console.log("El usuario no forma parte del proyecto.");
       }
     });
   });
@@ -174,14 +174,14 @@ function getPendingTasks(req, res) {
   var pendingTasks = [];
 
   Project.findById(projectId, (err, dataProyect) => {
-    if (err) return res.status(500).send({ message: "Request error!" });
+    if (err) return res.status(500).send({ message: "Error en peticion!" });
 
     Team.findById(dataProyect.developerTeam, (err, dataTeam) => {
       if (`${dataTeam.integrants}`.includes(`${idUser}`)) {
         Task.find({ project: projectId }).exec((err, pendingTask) => {
-          if (err) return res.status(500).send({ message: "Request error!" });
+          if (err) return res.status(500).send({ message: "Error en peticion!" });
           if (!pendingTask) {
-            return res.status(404).send({ message: "No found tasks" });
+            return res.status(404).send({ message: "No se encontraron tareas" });
           } else {
             for (let i = 0; i < pendingTask.length; i++) {
               if (pendingTask[i].progress < 100) {
@@ -192,7 +192,7 @@ function getPendingTasks(req, res) {
           }
         });
       } else {
-        console.log("The user is not part of the project.");
+        console.log("El usuario no forma parte del proyecto.");
       }
     });
   });
@@ -204,10 +204,10 @@ function editTask(req, res) {
 
   Task.findByIdAndUpdate(idTask, params, { new: true }, (err, editedTask) => {
     if (err)
-      return res.status(500).send({ message: "Failed to edit the task" });
+      return res.status(500).send({ message: "Error al editar la tarea" });
 
     if (!editedTask) {
-      return res.status(404).send({ message: "Task could not be edited" });
+      return res.status(404).send({ message: "La tarea no se pudo editar" });
     } else {
       return res.status(200).send({ task: editedTask });
     }
@@ -219,10 +219,10 @@ function deleteTask(req, res) {
 
   Task.findByIdAndDelete(idTask, (err, deletedTask) => {
     if (err)
-      return res.status(500).send({ message: "Failed to delete the task" });
+      return res.status(500).send({ message: "Error al eliminar la tarea" });
 
     if (!deletedTask) {
-      return res.status(500).send({ message: "Task could not be deleted" });
+      return res.status(500).send({ message: "La tarea no se pudo eliminar" });
     } else {
       return res.status(200).send({ task: deletedTask });
     }

@@ -15,19 +15,19 @@ function createTeam(req, res) {
       $and: [{ name: params.name }, { teamManager: params.teamManager }]
     }).exec((err, teams) => {
       if (err)
-        return res.status(500).send({ message: "Error at searching teams" });
+        return res.status(500).send({ message: "Error al buscar equipos" });
 
       if (teams.length > 0) {
         return res
           .status(500)
-          .send({ message: "You already have a team with that name" });
+          .send({ message: "Ya tienes un equipo con ese nombre." });
       } else {
         team.save((err, storedTeam) => {
           if (err)
-            return res.status(500).send({ message: "Error at saving team" });
+            return res.status(500).send({ message: "Error al guardar equipo" });
 
           if (!storedTeam) {
-            return res.status(500).send({ message: "Team could not be saved" });
+            return res.status(500).send({ message: "El equipo no se pudo guardar" });
           } else {
             return res.status(200).send({ team: storedTeam });
           }
@@ -37,7 +37,7 @@ function createTeam(req, res) {
   } else {
     return res
       .status(500)
-      .send({ message: "You should add a name to the team" });
+      .send({ message: "Debes añadir un nombre al equipo." });
   }
 }
 
@@ -47,20 +47,20 @@ function deleteTeam(req, res) {
 
   Team.findById(teamId).exec((err, foundTeam) => {
     if (err)
-      return res.status(500).send({ message: "Error at searching teams" });
+      return res.status(500).send({ message: "Error al buscar equipos" });
 
     if (!foundTeam) {
-      return res.status(500).send({ message: "Team not found" });
+      return res.status(500).send({ message: "Equipo no encontrado" });
     } else {
       if (foundTeam.teamManager == ManagerId) {
         Team.findByIdAndRemove(teamId, (err, updatedTeam) => {
           if (err)
-            return res.status(500).send({ message: "Error at deleting team" });
+            return res.status(500).send({ message: "Error al eliminar equipo" });
 
           if (!updatedTeam) {
             return res
               .status(500)
-              .send({ message: "Team could not be deleted" });
+              .send({ message: "El equipo no pudo ser eliminado" });
           } else {
             return res.status(200).send({ team: updatedTeam });
           }
@@ -78,9 +78,9 @@ function addIntegrant(req, res) {
 
   Team.findById(teamId).exec((err, foundTeam) => {
     if (err)
-      return res.status(500).send({ message: "Error at searching teams" });
+      return res.status(500).send({ message: "Error al buscar equipos" });
     if (!foundTeam) {
-      return res.status(500).send({ message: "Team not found" });
+      return res.status(500).send({ message: "Equipo no encontrado" });
     } else {
       if (foundTeam.teamManager == ManagerId) {
         foundteam.integrants.forEach(element => {
@@ -104,12 +104,12 @@ function addIntegrant(req, res) {
               if (err)
                 return res
                   .status(500)
-                  .send({ message: "Error at adding integrant" });
+                  .send({ message: "Error al agregar integrante" });
 
               if (!updatedTeam) {
                 return res
                   .status(500)
-                  .send({ message: "Integrant could not be added" });
+                  .send({ message: "Integrant no pudo ser agregado" });
               } else {
                 return res.status(200).send({ team: updatedTeam });
               }
@@ -128,10 +128,10 @@ function removeIntegrant(req, res) {
 
   Team.findById(teamId).exec((err, foundTeam) => {
     if (err)
-      return res.status(500).send({ message: "Error at searching teams" });
+      return res.status(500).send({ message: "Error al buscar equipos" });
 
     if (!foundTeam) {
-      return res.status(500).send({ message: "Team not found" });
+      return res.status(500).send({ message: "Equipo no encontrado" });
     } else {
       if (foundTeam.teamManager == ManagerId) {
         Team.findByIdAndUpdate(
@@ -144,12 +144,12 @@ function removeIntegrant(req, res) {
             if (err)
               return res
                 .status(500)
-                .send({ message: "Error at removing integrant" });
+                .send({ message: "Error al eliminar integrante" });
 
             if (!updatedTeam) {
               return res
                 .status(500)
-                .send({ message: "Integrant could not be removed" });
+                .send({ message: "Integrante no pudo ser removido" });
             } else {
               return res.status(200).send({ team: updatedTeam });
             }
