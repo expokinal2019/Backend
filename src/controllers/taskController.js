@@ -14,7 +14,7 @@ function addTask(req, res) {
         task.status = 'TO DO';
 
         task.save((err, storedTask) => {
-            if (err) return res.status(500).send({ message: 'Error at saving task', err: error });
+            if (err) return res.status(500).send({ message: 'Error at saving task', err: err });
 
             if (!storedTask) {
                 return res.status(500).send({ message: 'Task could not be saved' });
@@ -30,7 +30,7 @@ function addTask(req, res) {
 function getTask(req, res){
     let idUser = req.params.id;
 
-    Task.find({taskOwner : idUser}).exec((err, userTasks) => {
+    Task.findOne({ _id : idUser }).exec((err, userTasks) => {
         if (err) return res.status(500).send({ message: 'Request error!' });
 
         if (!userTasks) {
@@ -54,7 +54,7 @@ function editTask(req, res){
     let params = req.body;
 
     Task.findByIdAndUpdate(idTask, params, {new : true}, (err, editedTask) => {
-        if (err) return res.status(500).send({ message: 'Failed to edit the task' });
+        if (err) return res.status(500).send({ message: 'Failed to edit the task', error: err });
 
         if (!editedTask) {
             return res.status(500).send({ message: 'Task could not be edited' });
