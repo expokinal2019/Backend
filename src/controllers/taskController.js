@@ -1,16 +1,12 @@
 'use strict'
 
 var Task = require('../models/task');
+const Label = require('../models/label');
 
 function addTask(req, res) {
     var params = req.body;
-    var task = new Task();
-
+    var task = new Task(params);
     if (params.name && params.description && params.deadline /* && params.taskOwner */) {
-        task.name = params.name;
-        task.description = params.description;
-        task.deadline = params.deadline;
-        task.taskOwner = params.taskOwner;
         task.status = 'TO DO';
 
         task.save((err, storedTask) => {
