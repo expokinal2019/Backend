@@ -59,7 +59,7 @@ function getTask(req, res) {
 }
 
 function getTasksByOwner(req, res) {
-  let ownerId = req.params.id;
+  let ownerId = req.params.ownerId;
 
   Task.find({ taskOwner: ownerId }).exec((err, userTasks) => {
     if (err) return res.status(500).send({ message: "Request error!" });
