@@ -70,7 +70,7 @@ function login(req, res) {
     if (err) return res.status(500).send({ message: "Error in request" });
 
     if (!foundUser) {
-      return res.status(500).send({ message: "User not found" });
+      return res.status(402).send({ message: "User not found" });
     } else {
       bcrypt.compare(password, foundUser.password, (err, check) => {
         if (!check) {
