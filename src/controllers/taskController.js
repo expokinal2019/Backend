@@ -62,6 +62,7 @@ function getTasksByOwner(req, res) {
   let ownerId = req.params.ownerId;
 
   Task.find({ taskOwner: ownerId }).exec((err, userTasks) => {
+    console.log(userTasks.length)
     if (err) return res.status(500).send({ message: "Request error!" });
     if (!userTasks) {
       return res.status(500).send({ message: "No found tasks" });
