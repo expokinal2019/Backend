@@ -4,17 +4,14 @@ var Team = require('../models/team');
 
 function createTeam(req, res) {
     var params = req.body;
-    var team = new Team();
-    var ManagerId = req.user.sub;
+    var team = new Team(params);
+    // var ManagerId = req.user.sub;
 
     if (params.name) {
-        team.name = params.name;
-        team.teamManager = ManagerId;
 
         Team.find({
             $and: [
-                { 'name': params.name },
-                { 'teamManager': params.teamManager }
+                { 'name': params.name }
             ]
         }).exec((err, teams) => {
             if (err) return res.status(500).send({ message: 'Error at searching teams' });
@@ -129,11 +126,18 @@ function removeIntegrant(req, res) {
     });
 }
 
+function listTeams(req, res) {
+    Team.find({}).exec((err, userTeams) => {
+        if (err) return res.status(500).send({ message: 'Request error!' });
 
+        return res.status(200).send({ teams: userTeams });
+    })
+}
 
 module.exports = {
     createTeam,
     addIntegrant,
     removeIntegrant,
-    deleteTeam
+    deleteTeam,
+    listTeams
 }

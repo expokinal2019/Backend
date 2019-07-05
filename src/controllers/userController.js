@@ -207,11 +207,20 @@ function getImage(req, res) {
   });
 }
 
+function listUsers(req, res) {
+  User.find({}).exec((err, userUsers) => {
+      if (err) return res.status(500).send({ message: 'Request error!' });
+
+      return res.status(200).send({ users: userUsers });
+  })
+}
+
 module.exports = {
   signUp,
   login,
   editUser,
   deleteUser,
   uploadImage,
-  getImage
+  getImage,
+  listUsers
 };
