@@ -47,7 +47,7 @@ function getNote(req, res) {
 }
 
 function getAllNotes(req, res) {
-    let ownerId = req.params.id;
+    let ownerId = req.user.sub;
 
     Note.find({ owner: ownerId }).exec((err, notes) => {
         if (err) return res.status(500).send({ message: 'Error en el servidor al buscar sus notas.' });
