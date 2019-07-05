@@ -8,7 +8,7 @@ var noteSchema = Schema({
     content: String,
     deadline: Date,
     labels: [String],
-    owner: [{ type: Schema.Types.ObjectId, ref: 'user' }],
+    owner: { type: Schema.Types.ObjectId, ref: 'user' },
     favorite: Boolean,
 });
 

@@ -77,7 +77,7 @@ function editNote(req, res) {
 function deleteNote(req, res) {
     let idNote = req.params.id;
 
-    Task.findByIdAndDelete(idNote, (err, deleted) => {
+    Note.findByIdAndDelete(idNote, (err, deleted) => {
         if (err)
             return res.status(500).send({ message: 'Error en el servidor al eliminar la nota solicitada.' });
         if (!deleted) {
