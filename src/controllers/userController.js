@@ -74,11 +74,11 @@ function login(req, res) {
     } else {
       bcrypt.compare(password, foundUser.password, (err, check) => {
         if (!check) {
-          return res.status(500).send({ message: "Wrong password" });
+          return res.status(402).send({ message: "Wrong password" });
         } else {
           foundUser.password = undefined;
           return res
-            .status(500)
+            .status(200)
             .send({ foundUser, token: jwt.createToken(foundUser) });
         }
       });
