@@ -70,6 +70,20 @@ function login(req, res) {
   });
 }
 
+function getUser(req, res){
+  let idUser = req.params.id;
+
+  User.findOne({ _id : idUser }).exec((err, user) => {
+      if (err) return res.status(500).send({ message: 'Request error!' });
+
+      if (!user) {
+          return res.status(500).send({ message: 'No found teams' });
+      } else {
+          return res.status(200).send({ users: user });
+      }
+  })
+}
+
 function editUser(req, res) {
   var userId = req.params.id;
   var params = req.body;
@@ -200,6 +214,7 @@ function listUsers(req, res) {
 module.exports = {
   signUp,
   login,
+  getUser,
   editUser,
   deleteUser,
   uploadImage,

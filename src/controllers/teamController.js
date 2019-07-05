@@ -35,6 +35,20 @@ function createTeam(req, res) {
     }
 }
 
+function getTeam(req, res){
+    let idUser = req.params.id;
+
+    Team.findOne({ _id : idUser }).exec((err, userTeams) => {
+        if (err) return res.status(500).send({ message: 'Request error!' });
+
+        if (!userTeams) {
+            return res.status(500).send({ message: 'No found teams' });
+        } else {
+            return res.status(200).send({ teams: userTeams });
+        }
+    })
+}
+
 function deleteTeam(req, res) {
     var teamId = req.params.teamId;
     var ManagerId = req.user.sub;
@@ -61,9 +75,9 @@ function deleteTeam(req, res) {
 }
 
 function addIntegrant(req, res) {
+    // var ManagerId = req.user.sub;
     var teamId = req.params.teamId;
-    var ManagerId = req.user.sub;
-    var integranId = req.params.integrantId;
+    var integrantId = req.params.integrantId;
     var estado = true;
 
     Team.findById(teamId).exec((err, foundTeam) => {
@@ -71,8 +85,8 @@ function addIntegrant(req, res) {
         if (!foundTeam) {
             return res.status(500).send({ message: 'Team not found' });
         } else {
-            if (foundTeam.teamManager == ManagerId) {
-                foundteam.integrants.forEach(element => {
+            if (true) {
+                foundTeam.integrants.forEach(element => {
                     if (element._id === integrantId) {
                         estado = false;
                         return res.status(500).send({ message: 'El usuario ya es integrante de este equipo.'})
@@ -81,7 +95,7 @@ function addIntegrant(req, res) {
                 if (estado) {
                     Team.findByIdAndUpdate(teamId, {
                         $addToSet: {
-                            integrants: { 'user': integranId, 'role': 'USER' }
+                            integrants: { 'user': integrantId, 'role': 'USER' }
                         }
                     }, { new: true }, (err, updatedTeam) => {
                         if (err) return res.status(500).send({ message: 'Error at adding integrant' });
@@ -139,5 +153,6 @@ module.exports = {
     addIntegrant,
     removeIntegrant,
     deleteTeam,
-    listTeams
+    listTeams,
+    getTeam
 }
