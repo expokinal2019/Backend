@@ -49,6 +49,21 @@ function getTeam(req, res){
     })
 }
 
+function editTeam(req, res){
+    let idTeam = req.params.id;
+    let params = req.body;
+
+    Team.findByIdAndUpdate(idTeam, params, {new : true}, (err, editedTeam) => {
+        if (err) return res.status(500).send({ message: 'Failed to edit the team', error: err });
+
+        if (!editedTeam) {
+            return res.status(500).send({ message: 'Team could not be edited' });
+        } else {
+            return res.status(200).send({ team: editedTeam });
+        }
+    });
+}
+
 function deleteTeam(req, res) {
     var teamId = req.params.teamId;
     var ManagerId = req.user.sub;
@@ -151,6 +166,7 @@ function listTeams(req, res) {
 module.exports = {
     createTeam,
     addIntegrant,
+    editTeam,
     removeIntegrant,
     deleteTeam,
     listTeams,
