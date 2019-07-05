@@ -1,62 +1,35 @@
 "use strict";
 
-var Task = require("../models/task");
-var Project = require("../models/project");
-var Team = require("../models/team");
-var User = require('../models/user');
+var Task = require('../models/task');
+const Label = require('../models/label');
 
 function addTask(req, res) {
-  var idUser = req.user.sub;
-  var idProject = req.params.idProject;
   var params = req.body;
-  var task = new Task();
+  var task = new Task(params);
 
   if (params.name && params.description && params.deadline) {
-    task.name = params.name;
-    task.description = params.description;
-    task.deadline = params.deadline;
-    task.taskOwner = idUser;
-    task.project = idProject;
     task.status = "TO DO";
-    Project.findById(idProject, (err, projectF) => {
-      if (projectF) {
-        if (projectF.projectOwner == idUser) {
-          task.save((err, storedTask) => {
-            if (err)
-              return res.status(500).send({ message: "Error at saving task" });
-            if (!storedTask) {
-              return res
-                .status(500)
-                .send({ message: "Task could not be saved" });
-            } else {
-              return res.status(200).send({ task: storedTask });
-            }
-          });
-        } else {
-          return res
-            .status(500)
-            .send({ message: "You are not the project Owner" });
-        }
+    task.save((err, storedTask) => {
+      if (err)
+        return res.status(500).send({ message: "Error at saving task" });
+      if (!storedTask) {
+        return res
+          .status(500)
+          .send({ message: "Task could not be saved" });
       } else {
-        return res.status(500).send({ message: "Project doesnt exists" });
+        return res.status(200).send({ task: storedTask });
       }
     });
-  } else {
-    return res.status(400).send({ message: "Bad request" });
+    // Project.findById(idProject, (err, projectF) => {
+    //   if (projectF) {
+    //     if (projectF.projectOwner == idUser) {
+          
+    //     }
+    //   } else {
+    //     res.status(402).send({ message: 'Grande! No mandaste los campos requeridos.' });
+    //   }
+    // });
   }
-}
-
-function getTask(req, res) {
-  let taskId = req.params.id;
-
-  Task.find({ _id: taskId }).exec((err, userTasks) => {
-    if (err) return res.status(500).send({ message: "Request error!" });
-    if (!userTasks) {
-      return res.status(500).send({ message: "No found tasks" });
-    } else {
-      return res.status(200).send({ tasks: userTasks });
-    }
-  });
 }
 
 function getTasksByOwnerName(req, res) {
@@ -258,5 +231,8 @@ module.exports = {
   getTasksByStatus,
   getTasksByLabels,
   getPendingTasks,
-  getTasksByOwnerName
+  getTasksByOwnerName,
+  getTasks,
+  editTask,
+  deleteTask
 };

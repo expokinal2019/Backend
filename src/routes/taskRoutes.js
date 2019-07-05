@@ -11,6 +11,7 @@ api.get('/:id', md_auth.ensureAuth, taskController.getTask);
 api.get('/owner/:ownerId', taskController.getTasksByOwner);
 api.get('/owner-name/:ownerName', taskController.getTasksByOwnerName);
 api.get('/:idProject/getAllTasks',md_auth.ensureAuth,taskController.getAllTasks)
+api.get('/', md_auth.ensureAuth, taskController.getTasks);
 api.put('/:id', md_auth.ensureAuth, taskController.editTask);
 api.delete('/:id', md_auth.ensureAuth, taskController.deleteTask);
 api.get('getTasksByDate/:date', md_auth.ensureAuth, taskController.getTasksByDate);

@@ -6,9 +6,12 @@ var teamController = require('../controllers/teamController');
 
 var api = express.Router();
 
-api.post('/create', md_auth.ensureAuth, teamController.createTeam);
-api.put('/:teamId/addIntegrant/:integrantId', md_auth.ensureAuth, teamController.addIntegrant);
+api.get('/', teamController.listTeams);
+api.get('/:id', teamController.getTeam);
+api.post('/', md_auth.ensureAuth, teamController.createTeam);
+api.put('/:id', md_auth.ensureAuth, teamController.editTeam);
+api.put('/:teamId/integrant/:integrantId', md_auth.ensureAuth, teamController.addIntegrant);
 api.delete('/:teamId', md_auth.ensureAuth, teamController.deleteTeam);
-api.delete('/:teamId/removeIntegrant/:integrantId', md_auth.ensureAuth, teamController.removeIntegrant);
+api.delete('/:teamId/integrant/:integrantId', md_auth.ensureAuth, teamController.removeIntegrant);
 
 module.exports = api;
