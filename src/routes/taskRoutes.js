@@ -18,5 +18,6 @@ api.get('getTasksByDate/:date', md_auth.ensureAuth, taskController.getTasksByDat
 api.get('getTasksByStatus/:status', md_auth.ensureAuth, taskController.getTasksByStatus);
 api.get('getTasksByLabels/:labels', md_auth.ensureAuth, taskController.getTasksByLabels);
 api.get('getPendingTasks/:projectId', md_auth.ensureAuth, taskController.getPendingTasks);
+api.get('test', (req, res) => res.status(200).send('test!'));
     
 module.exports = api;

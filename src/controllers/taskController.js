@@ -237,10 +237,10 @@ function getTask(req, res){
 function getTasks(req, res){
   let idTask = req.params.id;
 
-  Task.findOne({}).exec((err, task) => {
+  Task.find({}).exec((err, tasks) => {
     if (err) return res.status(500).send({ message: 'Request error!' });
 
-    return res.status(200).send({ tasks: task });
+    return res.status(200).send({ tasks: tasks });
   })
 }
 
