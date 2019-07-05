@@ -17,44 +17,26 @@ function signUp(req, res) {
     user.password = params.password;
     user.image = null;
 
-    User.find({
-      $or: [
-        { username: user.username.toLowerCase() },
-        { email: user.email.toLowerCase() }
-      ]
-    }).exec((err, users) => {
-      if (err)
-        return res.status(500).send({ message: "Error in search request" });
+    bcrypt.genSalt(10, function(err, salt) {
+      bcrypt.hash(params.password, salt, function(err, hash) {
+        user.password = hash;
 
-      if (user && users.length > 0) {
-        return res
-          .status(500)
-          .send({
-            message: "The username or email is already register with other user"
-          });
-      } else {
-        bcrypt.genSalt(10, function(err, salt) {
-          bcrypt.hash(params.password, salt, function(err, hash) {
-            user.password = hash;
+        user.save((err, storedUser) => {
+          if (err)
+            return res
+              .status(500)
+              .send({ message: "Error in save request" });
 
-            user.save((err, storedUser) => {
-              if (err)
-                return res
-                  .status(500)
-                  .send({ message: "Error in save request" });
-
-              if (!storedUser) {
-                return res
-                  .status(500)
-                  .send({ message: "User could not be stored" });
-              } else {
-                delete storedUser.password;
-                return res.status(200).send({ user: storedUser });
-              }
-            });
-          });
+          if (!storedUser) {
+            return res
+              .status(500)
+              .send({ message: "User could not be stored" });
+          } else {
+            delete storedUser.password;
+            return res.status(200).send({ user: storedUser });
+          }
         });
-      }
+      });
     });
   } else {
     return res
