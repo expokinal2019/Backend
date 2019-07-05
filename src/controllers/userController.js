@@ -61,6 +61,10 @@ function signUp(req, res) {
   }
 }
 
+/* function getUserId(req, res) {
+  var name = 
+} */
+
 function login(req, res) {
   var params = req.body;
   var email = params.email;

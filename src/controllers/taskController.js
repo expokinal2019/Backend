@@ -3,6 +3,7 @@
 var Task = require("../models/task");
 var Project = require("../models/project");
 var Team = require("../models/team");
+var User = require('../models/user');
 
 function addTask(req, res) {
   var idUser = req.user.sub;
@@ -55,6 +56,22 @@ function getTask(req, res) {
     } else {
       return res.status(200).send({ tasks: userTasks });
     }
+  });
+}
+
+function getTasksByOwnerName(req, res) {
+  let ownerName = req.params.ownerName;
+
+  User.findOne({ username: ownerName }, (err, user) => {
+    Task.find({ taskOwner: user._id }).exec((err, userTasks) => {
+      console.log(userTasks.length)
+      if (err) return res.status(500).send({ message: "Request error!" });
+      if (!userTasks) {
+        return res.status(500).send({ message: "No found tasks" });
+      } else {
+        return res.status(200).send({ tasks: userTasks });
+      }
+    });
   });
 }
 
@@ -240,5 +257,6 @@ module.exports = {
   getTasksByDate,
   getTasksByStatus,
   getTasksByLabels,
-  getPendingTasks
+  getPendingTasks,
+  getTasksByOwnerName
 };
