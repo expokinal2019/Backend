@@ -12,7 +12,11 @@ function addNote(req, res) {
         note.content = params.content;
         note.deadline = params.deadline;
         note.owner = idUser;
-        note.labels = params.labels.split(',');
+        if (params.labels) {
+            note.labels = params.labels.split(',');
+        } else {
+            note.labels = []
+        }
         note.favorite = params.favorite;
 
         note.save((err, savedNote) => {
