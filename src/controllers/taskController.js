@@ -220,6 +220,30 @@ function deleteTask(req, res) {
   });
 }
 
+function getTask(req, res){
+  let idTask = req.params.id;
+
+  Task.findOne({ _id : idTask }).exec((err, task) => {
+      if (err) return res.status(500).send({ message: 'Request error!' });
+
+      if (!task) {
+          return res.status(500).send({ message: 'No found teams' });
+      } else {
+          return res.status(200).send({ tasks: task });
+      }
+  })
+}
+
+function getTasks(req, res){
+  let idTask = req.params.id;
+
+  Task.findOne({}).exec((err, task) => {
+    if (err) return res.status(500).send({ message: 'Request error!' });
+
+    return res.status(200).send({ tasks: task });
+  })
+}
+
 module.exports = {
   addTask,
   getTask,
