@@ -47,7 +47,7 @@ function getAllNotes(req, res) {
 
     Note.find({ owner: ownerId }).exec((err, notes) => {
         if (err) return res.status(500).send({ message: 'Error en el servidor al buscar sus notas.' });
-        if (!userTasks) {
+        if (!notes) {
             return res.status(402).send({ message: 'No se encontro ninguna nota, por favor agregue una. :D' });
         } else {
             return res.status(200).send({ notes });
@@ -62,7 +62,7 @@ function editNote(req, res) {
     Note.findByIdAndUpdate(idNote, params, { new: true }, (err, note) => {
         if (err)
             return res.status(500).send({ message: 'Error en el servidor al editar la nota.' });
-        if (!editedTask) {
+        if (!note) {
             return res.status(402).send({ message: 'No se pudo editar la nota.' });
         } else {
             return res.status(200).send({ note });
@@ -76,10 +76,10 @@ function deleteNote(req, res) {
     Task.findByIdAndDelete(idNote, (err, deleted) => {
         if (err)
             return res.status(500).send({ message: 'Error en el servidor al eliminar la nota solicitada.' });
-        if (!deletedTask) {
+        if (!deleted) {
             return res.status(402).send({ message: 'La nota no se pudo eliminar.' });
         } else {
-            return res.status(200).send({ task: deletedTask });
+            return res.status(200).send({ note: deleted });
         }
     });
 }
