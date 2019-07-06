@@ -6,11 +6,11 @@ var taskController = require('../controllers/taskController');
 
 var api = express.Router();
 
-api.post('/', md_auth.ensureAuth, taskController.addTask);
-api.get('/', md_auth.ensureAuth, taskController.getTasks);
-api.get('/:id', md_auth.ensureAuth, taskController.getTask);
-api.put('/:id', md_auth.ensureAuth, taskController.editTask);
-api.delete('/:id', md_auth.ensureAuth, taskController.deleteTask);
+api.post('/', taskController.addTask);
+api.get('/', taskController.getTasks);
+api.get('/:id', taskController.getTask);
+api.put('/:id', taskController.editTask);
+api.delete('/:id', taskController.deleteTask);
 
 api.get('/owner/:ownerId', taskController.getTasksByOwner);
 api.get('/owner-name/:ownerName', taskController.getTasksByOwnerName);

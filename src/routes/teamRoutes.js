@@ -8,9 +8,10 @@ var api = express.Router();
 
 api.get('/', teamController.listTeams);
 api.get('/:id', teamController.getTeam);
-api.post('/', md_auth.ensureAuth, teamController.createTeam);
-api.put('/:id', md_auth.ensureAuth, teamController.editTeam);
-api.put('/:teamId/integrant/:integrantId', md_auth.ensureAuth, teamController.addIntegrant);
+api.post('/', teamController.createTeam);
+api.put('/:id', teamController.editTeam);
+api.put('/:teamId/integrant/:integrantId', teamController.addIntegrant);
+
 api.delete('/:teamId', md_auth.ensureAuth, teamController.deleteTeam);
 api.delete('/:teamId/integrant/:integrantId', md_auth.ensureAuth, teamController.removeIntegrant);
 
