@@ -4,8 +4,7 @@ var Team = require('../models/team');
 
 function createTeam(req, res) {
     var params = req.body;
-    var team = new Team(params);
-    // var ManagerId = req.user.sub;
+    var team = new Team();
 
     if (params.name) {
 
@@ -14,16 +13,19 @@ function createTeam(req, res) {
                 { 'name': params.name }
             ]
         }).exec((err, teams) => {
-            if (err) return res.status(500).send({ message: 'Error at searching teams' });
+            if (err) return res.status(500).send({ message: 'Error en la peticion' });
 
             if (teams.length > 0) {
-                return res.status(500).send({ message: 'You already have a team with that name' });
+                return res.status(404).send({ message: 'Ya tiene un equipo con este nombre' });
             } else {
+                team.name = params.name
+                team.description = params.description;
+                team.integrants = [];
                 team.save((err, storedTeam) => {
-                    if (err) return res.status(500).send({ message: 'Error at saving team' });
+                    if (err) return res.status(500).send({ message: 'Error en la peticion' });
 
                     if (!storedTeam) {
-                        return res.status(500).send({ message: 'Team could not be saved' });
+                        return res.status(404).send({ message: 'El equipo no ha sido guardado' });
                     } else {
                         return res.status(200).send({ team: storedTeam });
                     }
@@ -31,33 +33,32 @@ function createTeam(req, res) {
             }
         });
     } else {
-        return res.status(500).send({ message: 'You should add a name to the team' });
+        return res.status(404).send({ message: 'El equipo debe tener nombre' });
     }
 }
 
-function getTeam(req, res){
-    let idUser = req.params.id;
+function getTeam(req, res) {
+    let id = req.params.id;
 
-    Team.findOne({ _id : idUser }).exec((err, userTeams) => {
-        if (err) return res.status(500).send({ message: 'Request error!' });
+    Team.findById(id, (err, teams) => {
+        if (err) return res.status(500).send({ message: 'Error en la peticion' });
 
-        if (!userTeams) {
-            return res.status(500).send({ message: 'No found teams' });
-        } else {
-            return res.status(200).send({ teams: userTeams });
-        }
+        if (!teams) return res.status(404).send({ message: 'No se ha podido obtener el equipo' })
+
+        return res.status(200).send({ teams: teams })
     })
+
 }
 
-function editTeam(req, res){
+function editTeam(req, res) {
     let idTeam = req.params.id;
     let params = req.body;
 
-    Team.findByIdAndUpdate(idTeam, params, {new : true}, (err, editedTeam) => {
-        if (err) return res.status(500).send({ message: 'Failed to edit the team', error: err });
+    Team.findByIdAndUpdate(idTeam, params, { new: true }, (err, editedTeam) => {
+        if (err) return res.status(500).send({ message: 'Error en la peticion' });
 
         if (!editedTeam) {
-            return res.status(500).send({ message: 'Team could not be edited' });
+            return res.status(500).send({ message: 'El equipo no pudo ser editado' });
         } else {
             return res.status(200).send({ team: editedTeam });
         }
@@ -66,31 +67,18 @@ function editTeam(req, res){
 
 function deleteTeam(req, res) {
     var teamId = req.params.teamId;
-    var ManagerId = req.user.sub;
+    Team.findByIdAndRemove(teamId, (err, updatedTeam) => {
+        if (err) return res.status(500).send({ message: 'Error en la peticion' });
 
-    Team.findById(teamId).exec((err, foundTeam) => {
-        if (err) return res.status(500).send({ message: 'Error at searching teams' });
-
-        if (!foundTeam) {
-            return res.status(500).send({ message: 'Team not found' });
+        if (!updatedTeam) {
+            return res.status(500).send({ message: 'El equipo no pudo ser eliminado' });
         } else {
-            if (foundTeam.teamManager == ManagerId) {
-                Team.findByIdAndRemove(teamId, (err, updatedTeam) => {
-                    if (err) return res.status(500).send({ message: 'Error at deleting team' });
-
-                    if (!updatedTeam) {
-                        return res.status(500).send({ message: 'Team could not be deleted' });
-                    } else {
-                        return res.status(200).send({ team: updatedTeam });
-                    }
-                })
-            }
+            return res.status(200).send({ team: updatedTeam });
         }
     });
 }
 
 function addIntegrant(req, res) {
-    // var ManagerId = req.user.sub;
     var teamId = req.params.teamId;
     var integrantId = req.params.integrantId;
     var estado = true;
@@ -104,7 +92,7 @@ function addIntegrant(req, res) {
                 foundTeam.integrants.forEach(element => {
                     if (element._id === integrantId) {
                         estado = false;
-                        return res.status(500).send({ message: 'El usuario ya es integrante de este equipo.'})
+                        return res.status(500).send({ message: 'El usuario ya es integrante de este equipo.' })
                     }
                 });
                 if (estado) {
@@ -114,7 +102,7 @@ function addIntegrant(req, res) {
                         }
                     }, { new: true }, (err, updatedTeam) => {
                         if (err) return res.status(500).send({ message: 'Error at adding integrant' });
-    
+
                         if (!updatedTeam) {
                             return res.status(500).send({ message: 'Integrant could not be added' });
                         } else {
@@ -157,9 +145,21 @@ function removeIntegrant(req, res) {
 
 function listTeams(req, res) {
     Team.find({}).exec((err, userTeams) => {
-        if (err) return res.status(500).send({ message: 'Request error!' });
-
+        if (err) return res.status(500).send({ message: 'Error en la peticion' });
+        if (!userTeams) return res.status(404).send({ message: 'No se han obtenido los equipos' })
         return res.status(200).send({ teams: userTeams });
+    })
+}
+
+function userTeams(req, res) {
+    var userId = req.user.sub;
+    Team.find({ integrants: { $elemMatch: {user: userId}}}, (err, teams)=>{
+        if(err) return res.status(500).send({message: 'Error en la peticion'})
+
+        if(!teams) return res.status(404).send({message: 'No se han podido obtener los equipos con el usuario'})
+
+        return res.status(200).send({teams: teams});
+
     })
 }
 
@@ -170,5 +170,6 @@ module.exports = {
     removeIntegrant,
     deleteTeam,
     listTeams,
-    getTeam
+    getTeam,
+    userTeams
 }

@@ -7,7 +7,7 @@ var projectController = require('../controllers/projectController');
 var api = express.Router();
 
 api.post('/', md_auth.ensureAuth, projectController.addProject);
-api.get('/:id', md_auth.ensureAuth, projectController.getProjects);
+api.get('/', md_auth.ensureAuth, projectController.getProjects);
 api.put('/:id', md_auth.ensureAuth, projectController.editProject);
 api.delete('/:id', md_auth.ensureAuth, projectController.deleteProject);
 

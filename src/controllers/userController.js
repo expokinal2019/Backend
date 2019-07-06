@@ -25,12 +25,12 @@ function signUp(req, res) {
           if (err)
             return res
               .status(500)
-              .send({ message: "Error in save request" });
+              .send({ message: "Error en la peticion" });
 
           if (!storedUser) {
             return res
-              .status(500)
-              .send({ message: "User could not be stored" });
+              .status(404)
+              .send({ message: "El usuario no pudo ser creado" });
           } else {
             delete storedUser.password;
             return res.status(200).send({ user: storedUser });
@@ -41,7 +41,7 @@ function signUp(req, res) {
   } else {
     return res
       .status(500)
-      .send({ message: "You must fill all fields before saving" });
+      .send({ message: "Debe llenar todos los datos" });
   }
 }
 
@@ -51,18 +51,18 @@ function login(req, res) {
   var password = params.password;
 
   User.findOne({ email: email }, (err, foundUser) => {
-    if (err) return res.status(500).send({ message: "Error in request" });
+    if (err) return res.status(500).send({ message: "Error en la peticion" });
 
     if (!foundUser) {
-      return res.status(500).send({ message: "User not found" });
+      return res.status(404).send({ message: "Usuario no encontrado" });
     } else {
       bcrypt.compare(password, foundUser.password, (err, check) => {
         if (!check) {
-          return res.status(500).send({ message: "Wrong password" });
+          return res.status(404).send({ message: "Contraseña incorrecta" });
         } else {
           foundUser.password = undefined;
           return res
-            .status(500)
+            .status(200)
             .send({ foundUser, token: jwt.createToken(foundUser) });
         }
       });
@@ -74,12 +74,12 @@ function getUser(req, res){
   let idUser = req.params.id;
 
   User.findOne({ _id : idUser }).exec((err, user) => {
-      if (err) return res.status(500).send({ message: 'Request error!' });
+      if (err) return res.status(500).send({ message: 'Error en la peticion' });
 
       if (!user) {
-          return res.status(500).send({ message: 'No found teams' });
+          return res.status(500).send({ message: 'Usuario no encontrado' });
       } else {
-          return res.status(200).send({ users: user });
+          return res.status(200).send({ user: user });
       }
   })
 }
@@ -98,13 +98,13 @@ function editUser(req, res) {
     params,
     { new: true },
     (err, usuarioActualizado) => {
-      if (err) return res.status(500).send({ message: "error en la peticion" });
+      if (err) return res.status(500).send({ message: "Error en la peticion" });
 
       if (!usuarioActualizado)
         return res
           .status(404)
           .send({
-            message: "No se ha podido actualziar los datos del usuario"
+            message: "No se ha podido actualizar los datos del usuario"
           });
       usuarioActualizado.password = undefined;
       return res.status(200).send({ user: usuarioActualizado });
@@ -120,7 +120,7 @@ function deleteUser(req, res) {
   }
 
   User.findByIdAndRemove(userId, (err, usuarioEliminado) => {
-    if (err) return res.status(500).send({ message: "Error en el servidor" });
+    if (err) return res.status(500).send({ message: "Error en la peticion" });
 
     if (usuarioEliminado) {
       return res.status(200).send({

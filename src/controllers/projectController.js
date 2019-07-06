@@ -4,7 +4,7 @@ var Project = require('../models/project');
 
 function addProject(req, res) {
     var params = req.body;
-    var projectOwner = req.params.userId;
+    var projectOwner = req.user.sub;
     var project = new Project();
 
     if (params.name && params.description && params.developerTeam) {
@@ -15,44 +15,42 @@ function addProject(req, res) {
         project.files = null;
 
         project.save((err, storedProject) => {
-            if (err) return res.status(500).send({ message: 'Error at saving project' });
+            if (err) return res.status(500).send({ message: 'Error en la peticion' });
 
             if (!storedProject) {
-                return res.status(500).send({ message: 'Project could no be saved' });
+                return res.status(404).send({ message: 'El proyecto no pudo ser guardado' });
             } else {
                 return res.status(200).send({ project: storedProject });
             }
         })
     } else {
-        return res.status(500).send({ message: 'Fill all the required fields before creating the project' })
+        return res.status(500).send({ message: 'Debe llenar todos los datos' })
     }
 }
 
 function editProject(req, res) {
     var params = req.body;
-    var projectId = req.params.projectId;
+    var projectId = req.params.id;
 
     Project.findByIdAndUpdate(projectId, params, {new: true}, (err, updatedProject) => {
-        if (err) return res.status(500).send({message: 'Error in update request'});
+        if (err) return res.status(500).send({message: 'Error en la peticion'});
 
         if (!updatedProject) {
-            return res.status(500).send({message: 'Project could not be updated'});
+            return res.status(500).send({message: 'El proyecto no pudo ser actualizado'});
         } else {
             return res.status(200).send({project: updatedProject});
         }
     })
 }
 
-// @TODO Necesito obtener los proyectos, de los cuales no soy el dueño,
-//     pero pertenezco al equipo de trabajo.
 function getProjects(req, res) {
-    var projectOwner = req.params.id;
+    var projectOwner = req.user.sub;
 
     Project.find({'projectOwner': projectOwner}).exec((err, projects) => {
-        if (err) return res.status(500).send({message: 'error in find request'});
+        if (err) return res.status(500).send({message: 'Error en la peticion'});
 
         if (!projects) {
-            return res.status(500).send({message: 'There are no projects to list'});
+            return res.status(404).send({message: 'No se han podido obtener los proyectos'});
         } else {
             return res.status(200).send({projects: projects});
         }
@@ -63,12 +61,12 @@ function deleteProject(req, res) {
     var projectId = req.params.id;
 
     Project.findByIdAndDelete(projectId, (err, deletedProject) => {
-        if (err) return res.status(500).send({message: 'Error in delete request'});
+        if (err) return res.status(500).send({message: 'Error en la peticion'});
 
         if (!deletedProject) {
-            return res.status(500).send({message: 'Project could not be deleted'});
+            return res.status(500).send({message: 'El proyecto no pudo ser eliminado'});
         } else {
-            return res.status(200).send({message: 'Project deleted successfully'});
+            return res.status(200).send({project: 'Proyecto eliminado correctamente'});
         }
     })
 }
