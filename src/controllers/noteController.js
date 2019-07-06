@@ -7,7 +7,8 @@ function addNote(req, res) {
     var params = req.body;
     var note = new Note();
 
-    if (params.title && params.content && params.favorite) {
+    // if (params.title && params.content && params.favorite) {
+    if (true) {
         note.title = params.title;
         note.content = params.content;
         note.deadline = params.deadline;
