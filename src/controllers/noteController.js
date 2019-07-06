@@ -25,7 +25,7 @@ function addNote(req, res) {
             }
         });
     } else {
-        return res.status(400).send({ message: 'Datos incompletos para crear una nota.' });
+        return res.status(400).send({ message: 'Datos incompletos para crear una nota.', params });
     }
 }
 
