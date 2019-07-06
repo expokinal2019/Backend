@@ -7,7 +7,7 @@ function addNote(req, res) {
     var params = req.body;
     var note = new Note();
 
-    if (params.title && params.content && params.favorite) {
+    if (params.title) {
         note.title = params.title;
         note.content = params.content;
         note.deadline = params.deadline;
@@ -25,7 +25,7 @@ function addNote(req, res) {
             }
         });
     } else {
-        return res.status(400).send({ message: 'Datos incompletos para crear una nota.', params });
+        return res.status(400).send({ message: 'Datos incompletos para crear una nota.' });
     }
 }
 
