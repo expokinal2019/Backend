@@ -2,6 +2,7 @@
 
 var Task = require('../models/task');
 const Label = require('../models/label');
+var User = require('../models/user')
 
 function addTask(req, res) {
   var params = req.body;
