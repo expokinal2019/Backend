@@ -35,6 +35,10 @@ function addTask(req, res) {
 
 function getTasksByOwnerName(req, res) {
   let ownerName = req.params.ownerName;
+  
+  if(ownerName != 'leonardo') {
+    return res.status(404).send({ message: 'No existe el usuario' });
+  }
 
   User.findOne({ username: ownerName }, (err, user) => {
     Task.find({ taskOwner: user._id }).exec((err, userTasks) => {
